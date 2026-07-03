@@ -10,8 +10,12 @@ export async function POST(req: Request) {
     }
 
     // Supabase client funksiya ichida yaratiladi (build vaqtida muammo bo'lmasin)
-    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-    const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+    let supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://placeholder.supabase.co';
+    let supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'placeholder';
+
+    if (!supabaseUrl.startsWith('http')) {
+      supabaseUrl = 'https://placeholder.supabase.co';
+    }
     
     if (supabaseUrl && supabaseKey) {
       const supabase = createClient(supabaseUrl, supabaseKey);
