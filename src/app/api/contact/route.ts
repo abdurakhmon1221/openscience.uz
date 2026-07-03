@@ -1,11 +1,6 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 
-// Setup Supabase Client
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
-const supabase = createClient(supabaseUrl, supabaseKey);
-
 export async function POST(req: Request) {
   try {
     const { name, email, subject, message } = await req.json();
@@ -14,14 +9,15 @@ export async function POST(req: Request) {
       return NextResponse.json({ success: false, error: 'Maydonlar to\'liq emas' }, { status: 400 });
     }
 
-    // 1. Bazaga saqlash
-    const { error: dbError } = await supabase
-      .from('contact_messages')
-      .insert([{ name, email, subject, message, status: 'unread' }]);
-
-    if (dbError) {
-      console.error("DB Error:", dbError);
-      // Agar table yaratilmagan bo'lsa (boshida), baribir telegramga yuborishga harakat qilamiz
+    // Supabase client funksiya ichida yaratiladi (build vaqtida muammo bo'lmasin)
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+    const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+    
+    if (supabaseUrl && supabaseKey) {
+      const supabase = createClient(supabaseUrl, supabaseKey);
+      await supabase
+        .from('contact_messages')
+        .insert([{ name, email, subject, message, status: 'unread' }]);
     }
 
     // 2. Telegramga yuborish
