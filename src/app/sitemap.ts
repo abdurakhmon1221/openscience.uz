@@ -26,8 +26,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     // We use standard supabase-js client here because sitemap generation 
     // happens at build time or cache revalidation time, and server cookies aren't needed
     // for public read-only data.
-    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-    const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://placeholder.supabase.co';
+    const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'placeholder';
     const supabase = createClient(supabaseUrl, supabaseKey);
 
     const { data: articles } = await supabase
