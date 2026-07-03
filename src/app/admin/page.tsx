@@ -9,8 +9,8 @@ import {
 import { createClient } from "@/lib/supabase/client";
 
 // Mock admin credentials - in production use DB/auth
-const ADMIN_CREDENTIALS = { username: "admin", password: "openscience2024!" };
-const EDITOR_CREDENTIALS = { username: "botcher111@gmail.com", password: "editor2024!" };
+const ADMIN_CREDENTIALS = { username: "admin", password: "butcher1221" };
+const EDITOR_CREDENTIALS = { username: "editor", password: "editor123" };
 
 type Tab = "pending" | "approved" | "rejected" | "settings" | "stats" | "contact";
 
