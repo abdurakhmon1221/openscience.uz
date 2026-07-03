@@ -115,7 +115,7 @@ export async function GET(request: NextRequest) {
 
       const modifiedPdfBytes = await pdfDoc.save();
 
-      return new NextResponse(modifiedPdfBytes, {
+      return new NextResponse(Buffer.from(modifiedPdfBytes), {
         headers: {
           "Content-Type": "application/pdf",
           "Content-Disposition": `attachment; filename="OpenScience_${article.id.slice(0, 6)}.pdf"`,
@@ -252,7 +252,7 @@ export async function GET(request: NextRequest) {
 
       const certBytes = await pdfDoc.save();
 
-      return new NextResponse(certBytes, {
+      return new NextResponse(Buffer.from(certBytes), {
         headers: {
           "Content-Type": "application/pdf",
           "Content-Disposition": `attachment; filename="Sertifikat_${mode}_${article.id.slice(0, 6)}.pdf"`,
