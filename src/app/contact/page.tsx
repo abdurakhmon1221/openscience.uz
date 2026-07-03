@@ -1,3 +1,5 @@
+"use client";
+
 import { useState } from "react";
 import { useLanguage } from "@/components/LanguageProvider";
 import { Mail, MapPin, Phone, Send, Loader2, CheckCircle } from "lucide-react";
