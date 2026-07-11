@@ -12,7 +12,8 @@ CREATE TABLE IF NOT EXISTS public.articles (
     user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE,
     status TEXT DEFAULT 'pending' CHECK (status IN ('pending', 'approved', 'rejected')),
     plagiarism_score INTEGER DEFAULT 0,
-    feedback TEXT
+    feedback TEXT,
+    keywords TEXT
 );
 
 -- 2. Create site_settings table (for admin)

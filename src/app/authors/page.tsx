@@ -43,7 +43,7 @@ export default function AuthorsPage() {
             Maqolangizni tayyorlashda quyidagi rasmiy shablon (template) dan foydalaning. Shablon barcha kerakli bo'limlarni (Sarlavha, Annotatsiya, Kirish, Metodologiya, Natijalar, Xulosa, Adabiyotlar) o'z ichiga oladi.
           </p>
           <a
-            href="/template.docx"
+            href="/templates/OpenScience_Template.docx"
             download
             className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-lg font-medium transition-colors shadow"
           >

@@ -91,6 +91,19 @@ export default function SubmitArticlePage() {
 
       if (dbError) throw dbError;
 
+      // Notify via Telegram
+      fetch('/api/telegram/notify', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          type: 'new_article',
+          title,
+          authors,
+          category,
+          keywords
+        })
+      }).catch(err => console.error("Telegram notification failed", err));
+
       // 3. Go to Success step
       setStep(4);
     } catch (err: any) {

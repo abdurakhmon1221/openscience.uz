@@ -3,6 +3,8 @@
 import Link from "next/link";
 import { Search, ArrowRight, BookOpen, Download, FileText, CheckCircle } from "lucide-react";
 import { useLanguage } from "@/components/LanguageProvider";
+import { useState, useEffect } from "react";
+import { createClient } from "@/lib/supabase/client";
 
 // Real open-access articles sourced from PubMed, PMC, arXiv, DOAJ
 const trendingArticles = [
@@ -94,8 +96,28 @@ const trendingArticles = [
 
 export default function Home() {
   const { t, locale } = useLanguage();
+  const [articles, setArticles] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const supabase = createClient();
 
-  const getTitle = (article: typeof trendingArticles[0]) => {
+  useEffect(() => {
+    const fetchArticles = async () => {
+      const { data } = await supabase
+        .from('articles')
+        .select('*')
+        .eq('status', 'approved')
+        .order('created_at', { ascending: false })
+        .limit(6);
+      
+      if (data) {
+        setArticles(data);
+      }
+      setLoading(false);
+    };
+    fetchArticles();
+  }, [supabase]);
+
+  const getTitle = (article: any) => {
     if (locale === 'uz') return article.title_uz || article.title;
     if (locale === 'ru') return article.title_ru || article.title;
     return article.title;
@@ -161,29 +183,41 @@ export default function Home() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {trendingArticles.map((article) => (
-              <Link key={article.id} href={`/article/${article.id}`} className="liquid-glass-card p-6 flex flex-col h-full group">
-                <div className="flex items-center justify-between mb-3">
-                  <span className="text-xs font-semibold text-blue-600 dark:text-blue-400 uppercase tracking-wider bg-blue-50 dark:bg-blue-900/30 px-2 py-1 rounded">
-                    {article.category}
-                  </span>
-                  <span className="text-xs text-slate-400 dark:text-slate-500">{article.year}</span>
-                </div>
-                <h3 className="text-lg font-bold font-serif text-slate-900 dark:text-white mb-3 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors line-clamp-2">
-                  {getTitle(article)}
-                </h3>
-                <p className="text-sm text-slate-600 dark:text-slate-300 mb-4 line-clamp-3 flex-grow leading-relaxed">
-                  {article.abstract}
-                </p>
-                <div className="pt-4 border-t border-slate-200 dark:border-slate-700/50 flex justify-between items-center text-xs text-slate-500 dark:text-slate-400">
-                  <span className="truncate max-w-[150px] font-medium text-slate-700 dark:text-slate-300">{article.authors}</span>
-                  <div className="flex gap-3 shrink-0">
-                    <span className="flex items-center gap-1"><BookOpen className="w-3.5 h-3.5" /> {(article.views/1000).toFixed(1)}k</span>
-                    <span className="flex items-center gap-1"><Download className="w-3.5 h-3.5" /> {(article.downloads/1000).toFixed(1)}k</span>
+            {loading ? (
+              <div className="col-span-1 md:col-span-2 lg:col-span-3 text-center py-10 text-slate-500">
+                Yuklanmoqda...
+              </div>
+            ) : articles.length > 0 ? (
+              articles.map((article) => (
+                <Link key={article.id} href={`/article/${article.id}`} className="liquid-glass-card p-6 flex flex-col h-full group">
+                  <div className="flex items-center justify-between mb-3">
+                    <span className="text-xs font-semibold text-blue-600 dark:text-blue-400 uppercase tracking-wider bg-blue-50 dark:bg-blue-900/30 px-2 py-1 rounded">
+                      {article.category}
+                    </span>
+                    <span className="text-xs text-slate-400 dark:text-slate-500">
+                      {new Date(article.created_at).getFullYear()}
+                    </span>
                   </div>
-                </div>
-              </Link>
-            ))}
+                  <h3 className="text-lg font-bold font-serif text-slate-900 dark:text-white mb-3 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors line-clamp-2">
+                    {getTitle(article)}
+                  </h3>
+                  <p className="text-sm text-slate-600 dark:text-slate-300 mb-4 line-clamp-3 flex-grow leading-relaxed">
+                    {article.abstract}
+                  </p>
+                  <div className="pt-4 border-t border-slate-200 dark:border-slate-700/50 flex justify-between items-center text-xs text-slate-500 dark:text-slate-400">
+                    <span className="truncate max-w-[150px] font-medium text-slate-700 dark:text-slate-300">{article.authors}</span>
+                    <div className="flex gap-3 shrink-0">
+                      <span className="flex items-center gap-1"><BookOpen className="w-3.5 h-3.5" /> {(article.views || 0)}</span>
+                      <span className="flex items-center gap-1"><Download className="w-3.5 h-3.5" /> {(article.downloads || 0)}</span>
+                    </div>
+                  </div>
+                </Link>
+              ))
+            ) : (
+              <div className="col-span-1 md:col-span-2 lg:col-span-3 text-center py-10 text-slate-500">
+                Hozircha maqolalar mavjud emas.
+              </div>
+            )}
           </div>
           
           <div className="mt-8 text-center sm:hidden">

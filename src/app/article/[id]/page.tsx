@@ -178,12 +178,23 @@ export default async function ArticlePage({ params }: { params: { id: string } }
               >
                 <FileText className="w-5 h-5" /> Maqolani o'qish (PDF)
               </a>
-              <a 
-                href={`/api/documents?mode=cert2&id=${article.id}`} 
-                className="flex-1 border-2 border-blue-600 text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/30 font-bold py-3 px-6 rounded-xl transition-colors flex items-center justify-center gap-2"
-              >
-                <Download className="w-5 h-5" /> Nashr sertifikati
-              </a>
+              <div className="flex-1 flex flex-col gap-2">
+                <span className="text-xs font-bold text-slate-500 uppercase">Sertifikatni yuklab olish:</span>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                  <a href={`/api/documents?mode=cert1&id=${article.id}`} className="border border-blue-200 dark:border-blue-800 text-blue-700 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/30 text-sm font-medium py-2 px-3 rounded-lg text-center transition-colors">
+                    1. Nashr Sertifikati
+                  </a>
+                  <a href={`/api/documents?mode=cert2&id=${article.id}`} className="border border-blue-200 dark:border-blue-800 text-blue-700 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/30 text-sm font-medium py-2 px-3 rounded-lg text-center transition-colors">
+                    2. Konferensiya
+                  </a>
+                  <a href={`/api/documents?mode=cert3&id=${article.id}`} className="border border-amber-200 dark:border-amber-800 text-amber-700 dark:text-amber-500 hover:bg-amber-50 dark:hover:bg-amber-900/30 text-sm font-medium py-2 px-3 rounded-lg text-center transition-colors">
+                    3. Premium Diplom
+                  </a>
+                  <a href={`/api/documents?mode=cert4&id=${article.id}`} className="border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 text-sm font-medium py-2 px-3 rounded-lg text-center transition-colors">
+                    4. Ma'lumotnoma
+                  </a>
+                </div>
+              </div>
             </div>
           </div>
         </div>

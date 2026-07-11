@@ -8,10 +8,7 @@ import {
 } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 
-// Mock admin credentials - in production use DB/auth
-const ADMIN_CREDENTIALS = { username: "admin", password: "butcher1221" };
-const EDITOR_CREDENTIALS = { username: "editor", password: "editor123" };
-
+// Admin and Editor credentials are now securely handled on the server.
 type Tab = "pending" | "approved" | "rejected" | "settings" | "stats" | "contact";
 
 export default function AdminDashboard() {
@@ -71,21 +68,26 @@ export default function AdminDashboard() {
     }
   };
 
-  const handleLogin = () => {
-    if (loginForm.username === ADMIN_CREDENTIALS.username && loginForm.password === ADMIN_CREDENTIALS.password) {
-      setIsLoggedIn(true);
-      setRole("admin");
-      setShowLoginModal(false);
+  const handleLogin = async () => {
+    try {
       setLoginError("");
-      fetchArticles();
-    } else if (loginForm.username === EDITOR_CREDENTIALS.username && loginForm.password === EDITOR_CREDENTIALS.password) {
-      setIsLoggedIn(true);
-      setRole("editor");
-      setShowLoginModal(false);
-      setLoginError("");
-      fetchArticles();
-    } else {
-      setLoginError("Login yoki parol noto'g'ri!");
+      const res = await fetch('/api/admin/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(loginForm)
+      });
+      const data = await res.json();
+      
+      if (res.ok && data.success) {
+        setIsLoggedIn(true);
+        setRole(data.role);
+        setShowLoginModal(false);
+        fetchArticles();
+      } else {
+        setLoginError(data.error || "Login yoki parol noto'g'ri!");
+      }
+    } catch (err) {
+      setLoginError("Xatolik yuz berdi. Iltimos qayta urinib ko'ring.");
     }
   };
 
